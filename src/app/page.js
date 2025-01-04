@@ -35,7 +35,11 @@ export default function Home() {
     }
   }, [data]);
   if (isLoading && page == 1) return (<Loading/>);
-  if (error) return <p>Error: {error.message}</p>;
+  if (error) {
+    console.log("Error details:", error);
+    return <p>Error: {error.message}</p>;
+  }
+
   return (
     <div className="container mx-auto text-white h-full">
       <div className="container  mx-auto lg:w-[60vw] w-[90vw] h-full">

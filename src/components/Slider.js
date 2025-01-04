@@ -43,10 +43,10 @@ const Slider = () => {
             ></div>
             <div className="absolute inset-0 bg-black bg-opacity-30">
               <div className="container w-full  bg-black bg-opacity-50 p-4 fixed bottom-0">
-                <p className="text text-2xl text-left font-bold mb-4">
+                <p className="text text-md lg:text-2xl text-left font-bold mb-4">
                   {movie.title}
                 </p>
-                <p className="text text-left">{movie.overview}</p>
+                <p className="text lg:text-lg text-sm text-left">{movie.overview}</p>
               </div>
             </div>
           </div>

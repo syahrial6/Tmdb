@@ -1,103 +1,59 @@
-import React from 'react'
+import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, EffectCards } from "swiper/modules";
+import { Pagination } from "swiper/modules";
+// Import Swiper styles
 import "swiper/css";
-import "swiper/css/effect-cards";
+import "swiper/css/pagination";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 
 const Slider = () => {
-  return (
-    <Swiper
-    className="mt-10 mb-20 shadow-violet-500/25 shadow-2xl" 
-    centeredSlides
-    loop
-    loopAdditionalSlides={3}
-    effect="cards"
-    cardsEffect={{
-      rotate: false,
-      perSlideOffset: 15
-    }}
-    autoplay={{
-      delay: 7000,
-      disableOnInteraction: false
-    }}
-    initialSlide={Math.floor(Math.random() * 8)}
-    modules={[Autoplay, EffectCards]}
-  >
-    
-      <SwiperSlide >
-        <div className="absolute w-full h-full bg-gradient-to-t from-black/80 m-auto to-transparent"></div>
-        <img
-          src={`https://image.tmdb.org/t/p/w500/6qld2YxAO9gdEblo0rsEb8BcYKO.jpg`}
-          alt={`backdrop image`}
-          loading="lazy"
-        />
-        <div className="absolute bottom-0 px-6 mb-6 text-white">
-          <p className="text-2xl mb-3 font-bold">aaa</p>
-          <p className="hidden md:block">aaaa</p>
-        </div>
-      </SwiperSlide>
-      <SwiperSlide >
-        <div className="absolute w-full h-full bg-gradient-to-t from-black/80 to-transparent"></div>
-        <img
-          src={`https://image.tmdb.org/t/p/w500/tElnmtQ6yz1PjN1kePNl8yMSb59.jpg`}
-          alt={`backdrop image`}
-          loading="lazy"
-        />
-        <div className="absolute bottom-0 px-6 mb-6 text-white">
-          <p className="text-2xl mb-3 font-bold">aaa</p>
-          <p className="hidden md:block">aaaa</p>
-        </div>
-      </SwiperSlide>
-      <SwiperSlide >
-        <div className="absolute w-full h-full bg-gradient-to-t from-black/80 to-transparent"></div>
-        <img
-          src={`https://image.tmdb.org/t/p/w500/6qld2YxAO9gdEblo0rsEb8BcYKO.jpg`}
-          alt={`backdrop image`}
-          loading="lazy"
-        />
-        <div className="absolute bottom-0 px-6 mb-6 text-white">
-          <p className="text-2xl mb-3 font-bold">aaa</p>
-          <p className="hidden md:block">aaaa</p>
-        </div>
-      </SwiperSlide>
-      <SwiperSlide >
-        <div className="absolute w-full h-full bg-gradient-to-t from-black/80 to-transparent"></div>
-        <img
-          src={`https://image.tmdb.org/t/p/w500/6qld2YxAO9gdEblo0rsEb8BcYKO.jpg`}
-          alt={`backdrop image`}
-          loading="lazy"
-        />
-        <div className="absolute bottom-0 px-6 mb-6 text-white">
-          <p className="text-2xl mb-3 font-bold">aaa</p>
-          <p className="hidden md:block">aaaa</p>
-        </div>
-      </SwiperSlide>
-      <SwiperSlide >
-        <div className="absolute w-full h-full bg-gradient-to-t from-black/80 to-transparent"></div>
-        <img
-          src={`https://image.tmdb.org/t/p/w500/6qld2YxAO9gdEblo0rsEb8BcYKO.jpg`}
-          alt={`backdrop image`}
-          loading="lazy"
-        />
-        <div className="absolute bottom-0 px-6 mb-6 text-white">
-          <p className="text-2xl mb-3 font-bold">aaa</p>
-          <p className="hidden md:block">aaaa</p>
-        </div>
-      </SwiperSlide>
-      <SwiperSlide >
-        <div className="absolute w-full h-full bg-gradient-to-t from-black/80 to-transparent"></div>
-        <img
-          src={`https://image.tmdb.org/t/p/w500/6qld2YxAO9gdEblo0rsEb8BcYKO.jpg`}
-          alt={`backdrop image`}
-          loading="lazy"
-        />
-        <div className="absolute bottom-0 px-6 mb-6 text-white">
-          <p className="text-2xl mb-3 font-bold">aaa</p>
-          <p className="hidden md:block">aaaa</p>
-        </div>
-      </SwiperSlide>
-  </Swiper>
-  )
-}
+  const getMovieSlider = async () => {
+    const { data } = await axios.get(
+      `${process.env.NEXT_PUBLIC_ENDPOINT}/movie/upcoming?language=en-US&page=1`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
+          Accept: "application/json",
+        },
+      }
+    );
+    return data.results || [];
+  };
 
-export default Slider
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["movieSlider"],
+    queryFn: getMovieSlider,
+  });
+  console.log(data);
+
+  if (isLoading) return <p>Loading...</p>;
+  return (
+    <Swiper pagination={true} modules={[Pagination]} className="mySwiper my-8">
+      {data.map((movie, index) => (
+        <SwiperSlide key={movie.id}>
+          <div
+            className={` relative w-full h-[365px] rounded-3xl overflow-hidden`}
+          >
+            <div
+              style={{
+                backgroundImage: `url(https://image.tmdb.org/t/p/w500${movie.backdrop_path})`,
+              }}
+              className={`bg-no-repeat bg-cover w-full h-full`}
+            ></div>
+            <div className="absolute inset-0 bg-black bg-opacity-30">
+              <div className="container w-full  bg-black bg-opacity-50 p-4 fixed bottom-0">
+                <p className="text text-2xl text-left font-bold mb-4">
+                  {movie.title}
+                </p>
+                <p className="text text-left">{movie.overview}</p>
+              </div>
+            </div>
+          </div>
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  );
+};
+
+export default Slider;

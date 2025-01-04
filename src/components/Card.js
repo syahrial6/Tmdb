@@ -3,8 +3,8 @@ import React from "react";
 
 const Card = ({ movie }) => {
   return (
-    <Link href={`/film/${movie.id}`} className="m-auto">
-      <div className="card rounded-2xl relative overflow-hidden hover:shadow-lg hover:shadow-orange-500 hover:translate-y-[-10px] transition-all duration-300 ease-in-out">
+    <Link href={`/film/${movie.id}`} className="">
+      <div className="rounded-2xl relative overflow-hidden hover:shadow-lg hover:shadow-orange-500 hover:translate-y-[-10px] transition-all duration-300 ease-in-out">
         <img
           src={
             movie.poster_path

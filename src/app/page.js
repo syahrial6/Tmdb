@@ -44,8 +44,10 @@ export default function Home() {
     <div className="container mx-auto text-white h-full">
       <div className="container  mx-auto lg:w-[60vw] w-[90vw] h-full">
         <Navbar />
+        <Slider />
+        <div className="flex justify-center items-center m-auto mt-6">
       
-        <div className="flex justify-center items-center m-auto mt-6"></div>
+        </div>
         <div className="text text-4xl font-bold py-4">
           <h1 className="text-4xl font-bold">Discover Movies</h1>
         </div>

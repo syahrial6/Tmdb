@@ -17,8 +17,13 @@ const Card = ({ movie }) => {
           <div className=" bg-slate-400 p-1 w-fit rounded-xl font-bold text-white flex">
             <img src="./star.svg" className="w-6 h-6 fill-blue-500" />
             <p className="text items-center justify-center m-auto px-1 text-md">
-              {movie.vote_average.toFixed(1)}
+              {movie.vote_average ? movie.vote_average.toFixed(1): "0.0"}
             </p>
+          </div>
+        </div>
+        <div className="absolute top-0 p-1 z-20 w-full">
+          <div className="bg-white p-1 w-fit rounded-xl">
+            <img src="./star.svg" className="w-6 h-6 flex justify-end" />
           </div>
         </div>
       </div>

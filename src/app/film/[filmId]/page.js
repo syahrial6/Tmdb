@@ -24,13 +24,39 @@ const DetailMovie = ({ params }) => {
     return data || {};
   };
 
-  const { data, error, isLoading } = useQuery({
+  const getTopCast = async () => {
+    const { data } = await axios.get(
+      `${process.env.NEXT_PUBLIC_ENDPOINT}/movie/${filmId}/credits?language=en-US`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
+          Accept: "application/json",
+        },
+      }
+    );
+    return data.cast || [];
+  };
+
+  const {
+    data: topCast,
+    error: errorTopCast,
+    isLoading: isLoadingTopCast,
+  } = useQuery({
+    queryKey: ["topCast"],
+    queryFn: getTopCast,
+  });
+
+  const {
+    data: detailMovie,
+    error: errorDetailMovie,
+    isLoading: isLoadingDetailMovie,
+  } = useQuery({
     queryKey: ["detailMovie"],
     queryFn: getDetailMovie,
   });
 
-  if (isLoading) return <Loading />;
-  if (error) return <p>Error: {error.message}</p>;
+  if (isLoadingDetailMovie && isLoadingTopCast) return <Loading />;
+  if (errorDetailMovie && errorTopCast) return <p>Error: {error.message}</p>;
 
   return (
     <div className="container m-auto">
@@ -43,37 +69,59 @@ const DetailMovie = ({ params }) => {
               </Link>
             </li>
             <li>
-              <p className="text-white">{data.title}</p>
+              <p className="text-white">{detailMovie.title}</p>
             </li>
           </ul>
         </div>
-        <div className="child relative mb-12 lg:w-[900px] lg:h-[500px] w-full h-[700px] bg-slate-300  m-auto rounded-xl overflow-hidden">
+        <div className="child relative mb-12 lg:w-[900px] lg:h-[550px] w-full h-[1200px] bg-slate-300  m-auto rounded-xl overflow-hidden">
           <div
             style={{
-              backgroundImage: `url(https://image.tmdb.org/t/p/w500/${data.backdrop_path})`,
+              backgroundImage: `url(https://image.tmdb.org/t/p/w500/${detailMovie.backdrop_path})`,
             }}
             className={`bg-no-repeat bg-cover w-full h-full`}
           ></div>
           <div className="absolute inset-0 bg-black bg-opacity-30 backdrop-blur-lg">
             <div className="container grid lg:grid-cols-3 grid-cols-1 gap-4 w-full h-[90%] items-center">
               <img
-                src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
+                src={`https://image.tmdb.org/t/p/w500${detailMovie.poster_path}`}
                 className=" w-64 h-96 rounded-2xl justify-center items-center flex m-auto"
               />
-              <div className="container w-full h-[90%] col-span-2 mt-8">
-                <p className="text font-bold text-4xl">{data.title}</p>
+              <div className="container w-full h-[90%] col-span-2 mt-8 px-4">
+                <p className="text font-bold text-4xl">{detailMovie.title}</p>
                 <div className="container inline-flex items-center my-2">
-                  <p className="text text-lg">{data.release_date}</p>
+                  <p className="text text-lg">{detailMovie.release_date}</p>
                   <p className="text font-bold text-xl px-2">|</p>
-                  <p className="text text-lg">{data.genres[0].name}</p>
+                  <p className="text text-lg">{detailMovie.genres[0].name}</p>
                   <p className="text font-bold text-xl px-2">|</p>
                   <p className="text text-lg">
-                    {Math.floor(data.runtime / 60)}h {data.runtime % 60}m
+                    {Math.floor(detailMovie.runtime / 60)}h{" "}
+                    {detailMovie.runtime % 60}m
                   </p>
                 </div>
-                <div>
+                <div className="">
                   <p className="my-2">Overview</p>
-                  <p>{data.overview}</p>
+                  <p className=" lg:h-[130px]">{detailMovie.overview}</p>
+                </div>
+                <div className="">
+                  <p className="mt-16 font-bold mb-4">TOP CAST</p>
+                  <div className="container grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {topCast &&
+                      topCast.slice(0, 4).map((cast, index) => (
+                        <div key={index} className="container  flex">
+                          <img
+                            src={`https://image.tmdb.org/t/p/w500${cast.profile_path}`}
+                            alt={cast.name} // Tambahkan alt untuk SEO
+                            className="w-16 h-16 rounded-full inline-block"
+                          />
+                          <div className="flex flex-col ml-2">
+                            <p className="text text-center font-bold">
+                              {cast.name}
+                            </p>
+                            <p className="text text-center">{cast.character}</p>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
                 </div>
               </div>
             </div>

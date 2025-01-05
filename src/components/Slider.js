@@ -25,7 +25,7 @@ const Slider = () => {
     queryKey: ["movieSlider"],
     queryFn: getMovieSlider,
   });
-  console.log(data);
+  
 
   if (isLoading) return <p>Loading...</p>;
   return (
